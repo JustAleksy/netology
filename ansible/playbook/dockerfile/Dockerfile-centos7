@@ -1,0 +1,7 @@
+# Базовый образ CentOS 7
+FROM centos:7
+
+# Установка Python
+RUN yum -y update && \
+    yum -y install python3 && \
+    yum clean all
