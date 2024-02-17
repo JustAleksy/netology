@@ -22,3 +22,14 @@ ansible.builtin.local:
 ![Пункт 9](https://github.com/JustAleksy/netology/assets/143338652/bf171e49-2c2f-49f3-aa51-edcb63a4a97c)
 ## Пункт 11
 ![Пункт 11](https://github.com/JustAleksy/netology/assets/143338652/5ffea104-a948-4f2d-b634-ef78de4a5278)
+
+# Необязательная часть
+
+## Пункт 1
+![Пункт 1](https://github.com/JustAleksy/netology/assets/143338652/cd9ce607-3665-4e32-8c52-9282165eedb8)
+## Пункт 2
+![Пункт 2](https://github.com/JustAleksy/netology/assets/143338652/33ece671-8396-413e-b714-adcda27bf37c)
+## Пункт 3
+![Пункт 3](https://github.com/JustAleksy/netology/assets/143338652/63232c08-a30f-4e09-b45e-4ba74b932e1f)
+## Пункт 4
+![Пункт 5](https://github.com/JustAleksy/netology/assets/143338652/0b7ecdff-8b8f-45de-907c-6784f10df9de)
