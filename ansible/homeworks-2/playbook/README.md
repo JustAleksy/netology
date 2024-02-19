@@ -38,9 +38,12 @@ Vector настраивается для сбора и обработки лог
 
 ### Пункт 5
 ![Пункт 5](https://github.com/JustAleksy/netology/assets/143338652/889dd75a-faa7-4114-933e-fb56a9632de1)
+
 ### Пункт 6
 ![Пункт 6](https://github.com/JustAleksy/netology/assets/143338652/033d8968-a5ce-4b35-938c-2428bafad29f)
+
 ### Пункт 7
 ![Пункт 7](https://github.com/JustAleksy/netology/assets/143338652/e6b6e72e-e8d4-4c9c-8f8d-81f2e2297783)
+
 ### Пункт 8
 ![Пункт 8](https://github.com/JustAleksy/netology/assets/143338652/3ee03b5f-9647-444a-b9b0-c1a89bb79919)
