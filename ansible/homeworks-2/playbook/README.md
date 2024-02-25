@@ -42,4 +42,4 @@ Nginx настраивается с использованием шаблона 
 ### Настройка
 Используйте `prod.yml` для настройки хостов и `vars.yml` для определения версий компонентов.
 ### Установка
-Запустите Playbook командой: `ansible-playbook -i inventory/prod.yml site.yml`.
+Запустите Playbook командой: `ansible-playbook -i inventory/prod.yml site.yml`
