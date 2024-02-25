@@ -13,17 +13,16 @@
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./{{ item }}-{{ clickhouse_version }}.x86_64.rpm"
-            mode: "0777"
+            mode: "0644"
           with_items: "{{ clickhouse_packages }}"
       rescue:
         - name: Get clickhouse distrib if primary URL fails
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
-            mode: "0777"
+            mode: "0644"
     - name: Install clickhouse packages (.x86_64)
       become: true
-      become_method: sudo
       ansible.builtin.yum:
         name:
           - clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm
@@ -37,7 +36,6 @@
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc != 82
       changed_when: create_db.rc == 0
-
 - name: Install and Configure Vector
   hosts: clickhouse
   handlers:
@@ -52,7 +50,7 @@
       ansible.builtin.get_url:
         url: "https://packages.timber.io/vector/latest/vector-{{ vector_version }}.x86_64.rpm"
         dest: "./vector-{{ vector_version }}.x86_64.rpm"
-        mode: "0777"
+        mode: "0644"
 
     - name: Install Vector
       become: true
@@ -64,5 +62,42 @@
       ansible.builtin.template:
         src: vector_config.j2
         dest: ./vector.toml
-        mode: "0777"
+        mode: "0644"
       notify: Restart vector
+- name: Install and Configure LightHouse
+  hosts: lighthouse
+  pre_tasks:
+    - name: Nginx | Install epel-release
+      become: true
+      ansible.builtin.yum:
+        name: epel-release
+        state: present
+    - name: Nginx | Install nginx
+      become: true
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+    - name: Nginx | Configure
+      become: true
+      ansible.builtin.template:
+        src: nginx_config.j2
+        dest: /etc/nginx/conf.d/lighthouse.conf
+        mode: "0644"
+  tasks:
+    - name: LightHouse | Install
+      become: true
+      ansible.builtin.yum:
+        name: git
+        state: present
+    - name: LightHouse | Clone repository
+      become: true
+      ansible.builtin.git:
+        repo: '{{ lighthouse_git }}'
+        dest: '{{ lighthouse_root_path }}'
+        version: master
+    - name: Nginx | Start
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

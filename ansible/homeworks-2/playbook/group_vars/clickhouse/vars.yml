@@ -5,3 +5,6 @@ clickhouse_packages:
   - clickhouse-server
   - clickhouse-common-static
 vector_version: "0.36.0-1"
+lighthouse_server_name: "lighthouse"
+lighthouse_root_path: "/opt/lighthouse"
+lighthouse_git: 'https://github.com/VKCOM/lighthouse.git'
