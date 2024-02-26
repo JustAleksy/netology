@@ -1,6 +1,8 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
+  vars_files:
+    - group_vars/clickhouse.yml
   handlers:
     - name: Start clickhouse service
       become: true
@@ -37,14 +39,15 @@
       failed_when: create_db.rc != 0 and create_db.rc != 82
       changed_when: create_db.rc == 0
 - name: Install and Configure Vector
-  hosts: clickhouse
+  hosts: vector
+  vars_files:
+    - group_vars/vector.yml
   handlers:
     - name: Restart vector
       become: true
       ansible.builtin.service:
         name: vector
         state: restarted
-
   tasks:
     - name: Download Vector distributive
       ansible.builtin.get_url:
@@ -66,6 +69,8 @@
       notify: Restart vector
 - name: Install and Configure LightHouse
   hosts: lighthouse
+  vars_files:
+    - group_vars/lighthouse.yml
   pre_tasks:
     - name: Nginx | Install epel-release
       become: true
