@@ -1,4 +1,0 @@
----
-# vars file for lighthouse
-lighthouse_root_path: "/opt/lighthouse"
-lighthouse_git: 'https://github.com/VKCOM/lighthouse.git'
