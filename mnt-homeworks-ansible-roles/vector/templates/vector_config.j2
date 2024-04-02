@@ -1,0 +1,13 @@
+# Vector Configuration File
+
+# Источник логов
+[sources.file_source]
+  type = "file"
+  include = ["/var/log/nginx/access.log", "/var/log/nginx/error.log"]
+  ignore_older = 86400
+
+# Приемник логов
+[sinks.console_sink]
+  type = "console"
+  inputs = ["file_source"]
+  encoding.codec = "json"

@@ -1,0 +1,20 @@
+---
+# tasks file for vector
+- name: Download Vector distributive
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/latest/vector-{{ vector_version }}.x86_64.rpm"
+    dest: "./vector-{{ vector_version }}.x86_64.rpm"
+    mode: "0644"
+
+- name: Install Vector
+  become: true
+  ansible.builtin.yum:
+    name: "./vector-{{ vector_version }}.x86_64.rpm"
+  notify: Restart vector
+
+- name: Deploy Vector Configuration
+  ansible.builtin.template:
+    src: vector_config.j2
+    dest: ./vector.toml
+    mode: "0644"
+  notify: Restart vector
