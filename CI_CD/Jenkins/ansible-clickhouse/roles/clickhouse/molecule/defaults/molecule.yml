@@ -1,13 +1,8 @@
 ---
-dependency:
-  name: galaxy
 driver:
   name: docker
 platforms:
   - name: instance
-    image: docker.io/pycontribs/centos:7
-    pre_build_image: true
-provisioner:
-  name: ansible
-verifier:
-  name: ansible
+    # you might want to add your own variables here based on what provisioning
+    # you are doing like:
+    # image: quay.io/centos/centos:stream8

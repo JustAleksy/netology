@@ -1,3 +1,5 @@
+---
+# handlers file for vector
 - name: Restart vector
   become: true
   ansible.builtin.service:

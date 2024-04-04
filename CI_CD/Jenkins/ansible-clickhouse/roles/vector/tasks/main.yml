@@ -1,3 +1,5 @@
+---
+# tasks file for vector
 - name: Download Vector distributive
   ansible.builtin.get_url:
     url: "https://packages.timber.io/vector/latest/vector-{{ vector_version }}.x86_64.rpm"
