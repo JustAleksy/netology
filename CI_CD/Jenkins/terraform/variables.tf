@@ -83,27 +83,6 @@ variable "each_vm" {
       ram           = 2
       core_fraction = 20
       disk_volume   = 10
-    },
-    {
-      vm_name       = "clickhouse"
-      cpu           = 2
-      ram           = 2
-      core_fraction = 20
-      disk_volume   = 10
-    },
-    {
-      vm_name       = "lighthouse"
-      cpu           = 2
-      ram           = 2
-      core_fraction = 20
-      disk_volume   = 10
-    },
-    {
-      vm_name       = "vector"
-      cpu           = 2
-      ram           = 2
-      core_fraction = 20
-      disk_volume   = 10
-    },
+    }
   ]
 }

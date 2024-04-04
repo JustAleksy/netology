@@ -1,0 +1,15 @@
+---
+- name: clickhouse
+  src: git@github.com:JustAleksy/clickhouse.git
+  scm: git
+  version: 1.0.3
+
+- name: lighthouse
+  src: git@github.com:JustAleksy/lighthouse.git
+  scm: git
+  version: 1.0.3
+
+- name: vector
+  src: git@github.com:JustAleksy/vector.git
+  scm: git
+  version: 1.0.3
