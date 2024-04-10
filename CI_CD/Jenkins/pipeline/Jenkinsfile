@@ -1,17 +1,24 @@
-node("agent"){
-    stage("Git checkout"){
-        git credentialsId: '6fd13941-6578-4171-b39c-9df007d49cac', url: 'git@github.com:JustAleksy/clickhouse.git'
+pipeline {
+    agent {
+        label 'agent'
     }
-     stage('Install molecule') {
-        steps{
-            sh 'pip3 install -r requirements.txt'
-            sh "echo ========"
+    stages {
+        stage('Checkout') {
+            steps{
+                git branch: 'master', credentialsId: 'a6975d34-7b75-451d-87ac-8ba8e6281fc1', url: 'https://github.com/JustAleksy/clickhouse.git'
+            }
         }
-    }
-    stage('Run Molecule'){
-        steps{
-            sh 'molecule test'
-            cleanWs()
+        stage('Install molecule') {
+            steps{
+                sh 'pip install -r requirements.txt'
+                sh "echo help"
+            }
+        }
+        stage('Run Molecule'){
+            steps{
+                sh 'molecule test'
+                cleanWs()
+            }
         }
     }
 }
