@@ -1,36 +1,22 @@
-devops-netology
-===============
-
-# Домашнее задание к занятию "09.04 Jenkins"
+# Домашнее задание к занятию "Jenkins"
 
 </details>  
 
 ## Подготовка к выполнению
-
-<details><summary>.</summary>
 
 1. Создать 2 VM: для jenkins-master и jenkins-agent.
 2. Установить jenkins при помощи playbook'a.
 3. Запустить и проверить работоспособность.
 4. Сделать первоначальную настройку.
 
-</details>  
-
 ## Основная часть
 
-<details><summary>.</summary>
-
 1. Сделать Freestyle Job, который будет запускать `molecule test` из любого вашего репозитория с ролью.
-
-    
-    - <details><summary>Скриншот настроек проекта</summary>
-
-        file:///home/aleksei/%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B8/2024-04-10_22-28-14.png
-
-      </details>
+        
+   ![2024-04-10_22-28-14](https://github.com/JustAleksy/netology/assets/143338652/f24d1b18-39f0-4e93-b5be-971389b99613)
 
     - <details><summary>Лог</summary>
-        ```log
+    ```log
         Started by user Кряжевских Алексей Александрович
         Running as SYSTEM
         Building remotely on agent (test) in workspace /opt/jenkins_agent/workspace/Freestyle
@@ -212,14 +198,17 @@ devops-netology
 
         Build step 'Execute shell' marked build as failure
         Finished: FAILURE
-        ```
+    ```
+        
+   </details>
 
 2. Сделать Declarative Pipeline Job, который будет запускать `molecule test` из любого вашего репозитория с ролью.
 
+   ![2024-04-10_22-36-44](https://github.com/JustAleksy/netology/assets/143338652/8445f408-ad3d-4813-9aee-8e16a99ba861)
 
     - <details><summary>Лог</summary>
 
-        ```log
+   ```log
         Started by user Кряжевских Алексей Александрович
         [Pipeline] Start of Pipeline
         [Pipeline] node
@@ -383,9 +372,9 @@ devops-netology
         [Pipeline] End of Pipeline
         ERROR: script returned exit code 1
         Finished: FAILURE
-        ```
+   ```
 
-        </details>
+   </details>
 
 3. Перенести Declarative Pipeline в репозиторий в файл `Jenkinsfile`.
 
@@ -393,14 +382,13 @@ devops-netology
 
 4. Создать Multibranch Pipeline на запуск `Jenkinsfile` из репозитория.
 
-    - Результат выполнения пайплайна
+    - Результат выполнения пайплайна     
         
-    - Скриншот пошагового выполнения
-        
-    - <details><summary>Settings</summary>
+       ![Снимок экрана от 2024-04-10 22-50-31](https://github.com/JustAleksy/netology/assets/143338652/0dfa9bcb-7781-4d3f-9ad4-9e005570e250)
 
-        
-        </details>
+    - Settings
+      
+      ![2024-04-10_22-51-07](https://github.com/JustAleksy/netology/assets/143338652/3f74a7b0-3a0a-4a8c-ae2a-ca7a2be4f337)
 
     - <details><summary>Scan Multibranch Pipeline Log</summary>
 
@@ -666,9 +654,8 @@ devops-netology
 
         </details>
 
-5. Создать Scripted Pipeline, наполнить его скриптом из pipeline.
-Скриншот скрипта
-6. Внести необходимые изменения, чтобы Pipeline запускал `ansible-playbook` без флагов `--check --diff`, если не установлен параметр при запуске джобы (prod_run = True), по умолчанию параметр имеет значение False и запускает прогон с флагами `--check --diff`.
+6. Создать Scripted Pipeline, наполнить его скриптом из pipeline.
+7. Внести необходимые изменения, чтобы Pipeline запускал `ansible-playbook` без флагов `--check --diff`, если не установлен параметр при запуске джобы (prod_run = True), по умолчанию параметр имеет значение False и запускает прогон с флагами `--check --diff`.
 ```groovy
 pipeline {
     agent { node { label 'agent' } }
