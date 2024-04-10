@@ -1,0 +1,35 @@
+pipeline {
+    agent { node { label 'agent' } }
+    parameters {
+        booleanParam(defaultValue: false, description: 'Run in production mode without --check --diff', name: 'prod_run')
+    }
+    stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'master', credentialsId: 'a6975d34-7b75-451d-87ac-8ba8e6281fc1', url: 'https://github.com/JustAleksy/example-playbook.git'
+            }
+        }
+        stage('Sample define secret_check') {
+            steps {
+                script {
+                    secret_check = true
+                }
+            }
+        }
+        stage('Run playbook') {
+            steps {
+                script {
+                    if (secret_check) {
+                        if (params.prod_run) {
+                            sh 'ansible-playbook site.yml -i inventory/prod.yml'
+                        } else {
+                            sh 'ansible-playbook site.yml -i inventory/prod.yml --check --diff'
+                        }
+                    } else {
+                        echo 'need more action'
+                    }
+                }
+            }
+        }
+    }
+}
