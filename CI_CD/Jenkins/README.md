@@ -1,35 +1,26 @@
-devops-netology
-===============
-
-# Домашнее задание к занятию "09.04 Jenkins"
+# Домашнее задание к занятию "Jenkins"
 
 </details>  
 
 ## Подготовка к выполнению
-
-<details><summary>.</summary>
 
 1. Создать 2 VM: для jenkins-master и jenkins-agent.
 2. Установить jenkins при помощи playbook'a.
 3. Запустить и проверить работоспособность.
 4. Сделать первоначальную настройку.
 
-</details>  
-
 ## Основная часть
-
-<details><summary>.</summary>
 
 1. Сделать Freestyle Job, который будет запускать `molecule test` из любого вашего репозитория с ролью.
 
-    
-    - <details><summary>Скриншот настроек проекта</summary>
+- <details><summary>Settings</summary>
+            
+    ![2024-04-10_22-28-14](https://github.com/JustAleksy/netology/assets/143338652/f24d1b18-39f0-4e93-b5be-971389b99613)
 
-        file:///home/aleksei/%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B8/2024-04-10_22-28-14.png
+   <details>
 
-      </details>
-
-    - <details><summary>Лог</summary>
+- <details><summary>Лог</summary>
+           
         ```log
         Started by user Кряжевских Алексей Александрович
         Running as SYSTEM
@@ -165,16 +156,16 @@ devops-netology
         INFO     Set ANSIBLE_ROLES_PATH=/home/jenkins/.cache/ansible-compat/ec3a28/roles:/home/jenkins/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles
         ERROR    Computed fully qualified role name of Aleksei.Freestyle does not follow current galaxy requirements.
         Please edit meta/main.yml and assure we can correctly determine full role name:
-
+        
         galaxy_info:
         role_name: my_name  # if absent directory name hosting role is used instead
         namespace: my_galaxy_namespace  # if absent, author is used instead
-
+        
         Namespace: https://galaxy.ansible.com/docs/contributing/namespaces.html#galaxy-namespace-limitations
         Role: https://galaxy.ansible.com/docs/contributing/creating_role.html#role-names
-
+        
         As an alternative, you can add 'role-name' to either skip_list or warn_list.
-
+        
         Traceback (most recent call last):
         File "/home/jenkins/.local/bin/molecule", line 8, in <module>
             sys.exit(main())
@@ -200,26 +191,35 @@ devops-netology
             raise InvalidPrerequisiteError(msg)
         ansible_compat.errors.InvalidPrerequisiteError: Computed fully qualified role name of Aleksei.Freestyle does not follow current galaxy requirements.
         Please edit meta/main.yml and assure we can correctly determine full role name:
-
+        
         galaxy_info:
         role_name: my_name  # if absent directory name hosting role is used instead
         namespace: my_galaxy_namespace  # if absent, author is used instead
-
+        
         Namespace: https://galaxy.ansible.com/docs/contributing/namespaces.html#galaxy-namespace-limitations
         Role: https://galaxy.ansible.com/docs/contributing/creating_role.html#role-names
-
+        
         As an alternative, you can add 'role-name' to either skip_list or warn_list.
-
+        
         Build step 'Execute shell' marked build as failure
         Finished: FAILURE
         ```
+        </details>
 
 2. Сделать Declarative Pipeline Job, который будет запускать `molecule test` из любого вашего репозитория с ролью.
+- <details><summary>Результат</summary>
+        
+  ![Снимок экрана от 2024-04-10 22-36-26](https://github.com/JustAleksy/netology/assets/143338652/2246ae29-54f1-4dd6-b1a5-f9ed9a86cb74)
+  <details>
 
+- <details><summary>Settings</summary>
+           
+   ![2024-04-10_22-36-44](https://github.com/JustAleksy/netology/assets/143338652/8445f408-ad3d-4813-9aee-8e16a99ba861)
+   <details>
 
-    - <details><summary>Лог</summary>
+- <details><summary>Лог</summary>
 
-        ```log
+   ```log
         Started by user Кряжевских Алексей Александрович
         [Pipeline] Start of Pipeline
         [Pipeline] node
@@ -393,16 +393,17 @@ devops-netology
 
 4. Создать Multibranch Pipeline на запуск `Jenkinsfile` из репозитория.
 
-    - Результат выполнения пайплайна
+- <details><summary>Результат</summary>
         
-    - Скриншот пошагового выполнения
-        
-    - <details><summary>Settings</summary>
+  ![Снимок экрана от 2024-04-10 22-50-31](https://github.com/JustAleksy/netology/assets/143338652/0dfa9bcb-7781-4d3f-9ad4-9e005570e250)
+  <details>
 
-        
-        </details>
+- <details><summary>Settings</summary>
+      
+  ![2024-04-10_22-51-07](https://github.com/JustAleksy/netology/assets/143338652/3f74a7b0-3a0a-4a8c-ae2a-ca7a2be4f337)
+  <details>
 
-    - <details><summary>Scan Multibranch Pipeline Log</summary>
+- <details><summary>Scan Multibranch Pipeline Log</summary>
 
         ```log
         Started by timer
@@ -449,7 +450,7 @@ devops-netology
 
         </details>
 
-    - <details><summary>Console Output</summary>
+- <details><summary>Console Output</summary>
 
         ```log
         Branch indexing
@@ -667,45 +668,50 @@ devops-netology
         </details>
 
 5. Создать Scripted Pipeline, наполнить его скриптом из pipeline.
-Скриншот скрипта
+   
 6. Внести необходимые изменения, чтобы Pipeline запускал `ansible-playbook` без флагов `--check --diff`, если не установлен параметр при запуске джобы (prod_run = True), по умолчанию параметр имеет значение False и запускает прогон с флагами `--check --diff`.
-```groovy
-pipeline {
-    agent { node { label 'agent' } }
-    parameters {
-        booleanParam(defaultValue: false, description: 'Run in production mode without --check --diff', name: 'prod_run')
-    }
-    stages {
-        stage('Git checkout') {
-            steps {
-                git branch: 'master', credentialsId: 'a6975d34-7b75-451d-87ac-8ba8e6281fc1', url: 'https://github.com/JustAleksy/example-playbook.git'
+   
+- <details><summary>Fixed Pipeline</summary>
+        
+        ```groovy
+        pipeline {
+            agent { node { label 'agent' } }
+            parameters {
+                booleanParam(defaultValue: false, description: 'Run in production mode without --check --diff', name: 'prod_run')
             }
-        }
-        stage('Sample define secret_check') {
-            steps {
-                script {
-                    secret_check = true
+            stages {
+                stage('Git checkout') {
+                    steps {
+                        git branch: 'master', credentialsId: 'a6975d34-7b75-451d-87ac-8ba8e6281fc1', url: 'https://github.com/JustAleksy/example-playbook.git'
+                    }
                 }
-            }
-        }
-        stage('Run playbook') {
-            steps {
-                script {
-                    if (secret_check) {
-                        if (params.prod_run) {
-                            sh 'ansible-playbook site.yml -i inventory/prod.yml'
-                        } else {
-                            sh 'ansible-playbook site.yml -i inventory/prod.yml --check --diff'
+                stage('Sample define secret_check') {
+                    steps {
+                        script {
+                            secret_check = true
                         }
-                    } else {
-                        echo 'need more action'
+                    }
+                }
+                stage('Run playbook') {
+                    steps {
+                        script {
+                            if (secret_check) {
+                                if (params.prod_run) {
+                                    sh 'ansible-playbook site.yml -i inventory/prod.yml'
+                                } else {
+                                    sh 'ansible-playbook site.yml -i inventory/prod.yml --check --diff'
+                                }
+                            } else {
+                                echo 'need more action'
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-}
-```
+        ```
+        <details>
+        
 7. Проверить работоспособность, исправить ошибки, исправленный Pipeline вложить в репозиторий в файл `ScriptedJenkinsfile`.
 
     - `prod_run=false`
@@ -880,8 +886,6 @@ pipeline {
 8. Отправить две ссылки на репозитории в ответе: с ролью и Declarative Pipeline и c плейбукой и Scripted Pipeline.
 
 </details>  
-
-### 8. Отправить две ссылки на репозитории в ответе: с ролью и Declarative Pipeline и c плейбукой и Scripted Pipeline.
 
 1. роль с Declarative Pipeline
 
