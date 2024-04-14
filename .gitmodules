@@ -1,0 +1,3 @@
+[submodule "monitoring_and_logs/monitoring_systems/sandbox"]
+	path = monitoring_and_logs/monitoring_systems/sandbox
+	url = https://github.com/influxdata/sandbox.git
