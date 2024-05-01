@@ -1,0 +1,14 @@
+#jinja2: lstrip_blocks: "True"
+{{ prometheus_var_config | to_nice_yaml(indent=2) }}
+{% if prometheus_node_exporter_group %}
+- job_name: node
+  scrape_interval: 15s
+  metrics_path: /metrics
+  static_configs:
+  - targets:
+{% for server in groups[prometheus_node_exporter_group] %}
+    - '{{ hostvars[server]["ansible_host"] }}:9100'
+    lables:
+      instance: '{{ server }}'
+{% endfor %}
+{% endif %}

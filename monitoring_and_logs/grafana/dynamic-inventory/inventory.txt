@@ -1,0 +1,11 @@
+# Файл инвентаризации для Ansible Playbook
+# Определите ваши хосты и их переменные
+
+# Конфигурация сервера мониторинга
+[monitorserver]
+db-server ansible_host=178.154.207.26 ansible_user=aleksei ansible_ssh_private_key_file=~/.ssh/id_ed25519
+
+# Конфигурация узловых серверов
+[nodeservers]
+server-1 ansible_host=158.160.113.23 ansible_user=aleksei ansible_ssh_private_key_file=~/.ssh/id_ed25519
+server-2 ansible_host=84.252.130.55 ansible_user=aleksei ansible_ssh_private_key_file=~/.ssh/id_ed25519

@@ -1,0 +1,12 @@
+#cloud-config
+datasource:
+ Ec2:
+  strict_id: false
+ssh_pwauth: no
+users:
+- name: aleksei
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEWsvs+8GLkWUbqQe42AOsAKbNu12mmyKK7/BonlA1g0 aleksei@aleksei-PC
+runcmd: []
