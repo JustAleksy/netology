@@ -1,0 +1,5 @@
+---
+# vars file for roles/grafana
+use_local_gpg_key: true
+local_gpg_key_path: "/tmp/gpg-key.txt"
+remote_gpg_key_url: "https://packages.grafana.com/gpg.key"
