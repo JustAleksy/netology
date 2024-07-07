@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dual-container-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dual-container-app
+  template:
+    metadata:
+      labels:
+        app: dual-container-app
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["/bin/sh", "-c", "while true; do echo 'Hello from busybox' >> /shared-data/file.txt; sleep 5; done"]
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared-data
+      - name: multitool
+        image: praqma/network-multitool
+        command: ["/bin/sh", "-c", "tail -f /shared-data/file.txt"]
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared-data
+      volumes:
+      - name: shared-data
+        emptyDir: {}
