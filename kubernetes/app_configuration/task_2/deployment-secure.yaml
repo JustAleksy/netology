@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secure-web-app
+  template:
+    metadata:
+      labels:
+        app: secure-web-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        env:
+          - name: HTTP_PORT
+            value: "80"
+          - name: HTTPS_PORT
+            value: "443"
+        ports:
+          - containerPort: 80
+            name: http-port
+          - containerPort: 443
+            name: https-port
+        volumeMounts:
+        - name: nginx-html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: nginx-html
+        configMap:
+          name: nginx-index-html

@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-index-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Добро пожаловать в Secure Nginx</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            .container {
+                background: #fff;
+                padding: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                text-align: center;
+            }
+            h1 {
+                color: #333;
+            }
+            button {
+                background-color: #007BFF;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Привет, Kubernetes!</h1>
+            <p>Я тут немного запарился.</p>
+            <button onclick="showMessage()">Не нажимать!</button>
+        </div>
+        <script>
+            function showMessage() {
+                alert('Бродит, говорят, по зоне ходячая аномалия — непьющий и некурящий DevOps. Приманивается на запах молочка или манной каши. Способ дистанционного обнаружения — на расстоянии 200 метров от объекта счетчик Гейгера зашкаливает.');
+            }
+        </script>
+    </body>
+    </html>
