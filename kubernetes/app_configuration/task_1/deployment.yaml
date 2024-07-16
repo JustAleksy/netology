@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-multitool-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-multitool
+  template:
+    metadata:
+      labels:
+        app: nginx-multitool
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-html
+          mountPath: /usr/share/nginx/html
+      - name: multitool
+        image: praqma/network-multitool:latest
+        env:
+        - name: HTTP_PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: nginx-html
+        configMap:
+          name: web-config
