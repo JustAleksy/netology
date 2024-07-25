@@ -19,11 +19,16 @@ kubectl config set-credentials meat --client-certificate=meat.crt --client-key=m
 kubectl config set-context microk8s-context --cluster=microk8s-cluster --user=meat
 kubectl config use-context microk8s-context
 ```
-### Применить манифесты
+### Применяем манифесты 
 ```
 kubectl apply -f role.yaml
 kubectl apply -f rolebinding.yaml
 ```
+![kubectl_apply](./media/kubectl_apply.png)
+
+### Результаты
+![output](./media/output.png)
+
 ---
 
 ## Ссылки
