@@ -114,18 +114,6 @@ variable "service_account_id" {
   default     = "aje75gcs2u9lmpp03ijh"
 }
 
-variable "service_account_name" {
-  description = "Имя сервисного аккаунта"
-  type        = string
-  default     = "netology-sa"
-}
-
-variable "service_account_role" {
-  description = "Роль, назначаемая сервисному аккаунту"
-  type        = string
-  default     = "admin"
-}
-
 ############################################
 # Настройки Object Storage
 ############################################
@@ -160,4 +148,20 @@ variable "instance_group_name" {
   description = "Имя группы виртуальных машин"
   type        = string
   default     = "lamp-instance-group"
+}
+
+############################################
+# Настройки KMS
+############################################
+
+variable "kms_key_name" {
+  description = "Название ключа KMS для шифрования содержимого бакета"
+  type        = string
+  default     = "bucket-encryption-key"
+}
+
+variable "kms_key_rotation_period" {
+  description = "Период ротации ключа KMS"
+  type        = string
+  default     = "24h"
 }
