@@ -2,4 +2,4 @@
 .terraform/providers/*
 terraform.tfstate
 terraform.tfstate.backup
-terraform.tfvars
+secrets.tfvars

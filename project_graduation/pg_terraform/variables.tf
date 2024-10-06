@@ -253,14 +253,3 @@ variable "k8s_worker_resources" {
     core_fraction = 20
   }
 }
-
-############################################
-# Сервисный аккаунт
-############################################
-
-variable "service_account_id" {
-  description = "Идентификатор сервисного аккаунта"
-  default     = "aje75gcs2u9lmpp03ijh"
-  type        = string
-}
-
