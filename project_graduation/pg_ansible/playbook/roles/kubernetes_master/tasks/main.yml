@@ -1,0 +1,67 @@
+---
+- name: Create an Empty file for Kubeadm configuring
+  copy:
+    content: ""
+    dest: /etc/kubernetes/kubeadm-config.yaml
+    force: no
+
+- name: Configure container runtime
+  blockinfile:
+    path: /etc/kubernetes/kubeadm-config.yaml
+    block: |
+      kind: ClusterConfiguration
+      apiVersion: kubeadm.k8s.io/v1beta3
+      networking:
+        podSubnet: "10.244.0.0/16"
+      ---
+      kind: KubeletConfiguration
+      apiVersion: kubelet.config.k8s.io/v1beta1
+      runtimeRequestTimeout: "15m"
+      cgroupDriver: "systemd"
+      systemReserved:
+        cpu: 100m
+        memory: 350M
+      kubeReserved:
+        cpu: 100m
+        memory: 50M
+      enforceNodeAllocatable:
+      - pods
+
+- name: Pull the latest pause image (3.9)
+  command: crictl pull registry.k8s.io/pause:3.9
+
+- name: Инициализация кластера Kubernetes на мастере
+  command: kubeadm init --apiserver-advertise-address={{ ansible_host }} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
+  # command: >
+  #   kubeadm init
+  #   --control-plane-endpoint "84.201.147.161:6443"
+  #   --apiserver-advertise-address {{ ansible_host }}
+  #   --pod-network-cidr=10.244.0.0/16
+  #   --upload-certs
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+- name: Создать директорию .kube для пользователя
+  file:
+    path: /home/aleksei/.kube
+    state: directory
+    owner: aleksei
+    group: aleksei
+    mode: '0700'
+
+- name: Копирование kubeconfig для пользователя
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/{{ ansible_user }}/.kube/config
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: Установка сетевого плагина Flannel
+  become: true
+  become_user: "{{ ansible_user }}"
+  shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.log
+  args:
+    chdir: $HOME
+    creates: pod_network_setup.log

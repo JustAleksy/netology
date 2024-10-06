@@ -1,0 +1,58 @@
+---
+- name: Deploy Atlantis to Kubernetes Cluster
+  hosts: master
+  become: true
+  vars:
+    atlantis_chart_version: 4.0.0
+    atlantis_namespace: monitoring
+    atlantis_node_port: 31000
+    yandex_bucket_name: tf-state-bucket-justaleksy
+    yandex_region: ru-central1
+  tasks:
+    - name: Ensure kubectl is installed
+      apt:
+        name: kubectl
+        state: present
+        update_cache: true
+
+    - name: Ensure Helm is installed
+      shell: |
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Add Atlantis Helm repository
+      shell: |
+        helm repo add runatlantis https://runatlantis.github.io/helm-charts
+        helm repo update
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Create Atlantis namespace
+      shell: |
+        kubectl create namespace {{ atlantis_namespace }} || true
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Install Atlantis via Helm chart
+      shell: |
+        helm upgrade --install atlantis runatlantis/atlantis \
+          --namespace {{ atlantis_namespace }} \
+          --version {{ atlantis_chart_version }} \
+          --set-string service.type=NodePort \
+          --set-string service.nodePort={{ atlantis_node_port }} \
+          --set-string atlantisDataStorage.bucket={{ yandex_bucket_name }} \
+          --set-string atlantisDataStorage.region={{ yandex_region }} \
+          --set persistence.storageClass=standard \
+          --set persistence.size=1Gi
+
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Wait for Atlantis deployment to be ready
+      shell: |
+        kubectl rollout status deployment/atlantis -n {{ atlantis_namespace }}
+      retries: 5
+      delay: 30
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config

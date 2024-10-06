@@ -1,0 +1,156 @@
+---
+- name: Остановить и отключить службу unattended-upgrades
+  systemd:
+    name: unattended-upgrades
+    state: stopped
+    enabled: true
+
+- name: Обновить apt cache
+  apt:
+    update_cache: true
+
+- name: Reboot
+  reboot:
+
+- name: Установка необходимых пакетов
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - gnupg2
+      - bridge-utils
+      - lsb-release
+      - gpg
+    state: present
+  retries: 5
+  delay: 30
+  register: install_result
+  until: install_result is succeeded
+
+- name: Добавить GPG-ключ Docker
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+
+- name: Добавить репозиторий Docker
+  apt_repository:
+    repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Add Kubernetes apt-key
+  get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
+    dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+    mode: "0644"
+    force: true
+
+- name: Add Kubernetes APT repository
+  apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+    state: present
+    update_cache: true
+
+- name: Установка Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: true
+  retries: 5
+  delay: 30
+  register: install_result
+  until: install_result is succeeded
+
+- name: Add containerd configuration
+  shell: /usr/bin/containerd config default > /etc/containerd/config.toml
+
+- name: Configuring Systemd cgroup driver for containerd
+  lineinfile:
+    path: /etc/containerd/config.toml
+    regexp: "            SystemdCgroup = false"
+    line: "            SystemdCgroup = true"
+
+- name: Перезапустить containerd
+  systemd:
+    name: containerd
+    state: restarted
+    enabled: true
+
+- name: Добавление пользователя в группу docker
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+
+- name: Установка Kubernetes компонентов
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - socat
+    state: present
+    update_cache: yes
+  retries: 5
+  delay: 30
+  register: install_result
+  until: install_result is succeeded
+
+- name: Настроить Docker daemon
+  copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "100m"
+        },
+        "storage-driver": "overlay2"
+      }
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Перезапуск Docker
+  service:
+    name: docker
+    state: restarted
+
+- name: Отключить swap
+  shell: |
+    swapoff -a
+    sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+- name: Загрузить модуль br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Убедиться, что модуль br_netfilter загружается при загрузке системы
+  copy:
+    dest: /etc/modules-load.d/br_netfilter.conf
+    content: |
+      br_netfilter
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Настройка параметров sysctl
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: true
+  loop:
+    - { name: net.bridge.bridge-nf-call-iptables, value: 1 }
+    - { name: net.bridge.bridge-nf-call-ip6tables, value: 1 }
+    - { name: net.ipv4.ip_forward, value: 1 }
+
+- name: Reboot
+  reboot:

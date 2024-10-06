@@ -1,0 +1,53 @@
+---
+- name: Deploy Monitoring Stack to Kubernetes Cluster
+  hosts: master
+  become: true
+  vars:
+    # Версия kube-prometheus-stack
+    kube_prometheus_version: 63.1.0
+    # Номер порта для Grafana
+    grafana_node_port: 32000
+  tasks:
+    - name: Ensure kubectl is installed
+      apt:
+        name: kubectl
+        state: present
+        update_cache: true
+
+    - name: Ensure Helm is installed
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Add Prometheus Helm repository
+      shell: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Create monitoring namespace
+      shell: |
+        kubectl create namespace monitoring || true
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Install kube-prometheus-stack
+      shell: |
+        helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+          --namespace monitoring \
+          --version {{ kube_prometheus_version }} \
+          --set grafana.service.type=NodePort \
+          --set grafana.service.nodePort={{ grafana_node_port }} \
+          --set grafana.adminPassword='admin'
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
+
+    - name: Wait for Grafana to be ready
+      shell: |
+        kubectl rollout status deployment/monitoring-grafana -n monitoring
+      retries: 5
+      delay: 30
+      environment:
+        KUBECONFIG: /home/{{ ansible_user }}/.kube/config
