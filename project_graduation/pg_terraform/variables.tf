@@ -3,7 +3,7 @@
 ############################################
 
 variable "token" {
-  description = "OAuth-токен"
+  description = "OAuth-токен Yandex Cloud, полученный из переменной окружения"
   type        = string
   default     = ""
 }
@@ -14,17 +14,19 @@ variable "YC_TOKEN" {
   default     = ""
 }
 
-variable "YC_ACCESS_KEY" {
+variable "access_key" {
   description = "Access Key для Yandex Object Storage"
   type        = string
   default     = ""
 }
 
-variable "YC_SECRET_KEY" {
+variable "secret_key" {
   description = "Secret Key для Yandex Object Storage"
   type        = string
   default     = ""
 }
+
+
 
 ############################################
 # Настройки инфраструктуры
@@ -253,14 +255,3 @@ variable "k8s_worker_resources" {
     core_fraction = 20
   }
 }
-
-############################################
-# Сервисный аккаунт
-############################################
-
-variable "service_account_id" {
-  description = "Идентификатор сервисного аккаунта"
-  default     = "aje75gcs2u9lmpp03ijh"
-  type        = string
-}
-

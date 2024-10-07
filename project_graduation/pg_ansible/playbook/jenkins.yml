@@ -79,6 +79,7 @@
           - gnupg
           - ca-certificates
           - curl
+          - unzip
         state: present
         update_cache: true
 
@@ -131,6 +132,49 @@
         group: "{{ jenkins_user_group }}"
         mode: '0700'
 
+    - name: Install unzip package on agent
+      apt:
+        name: unzip
+        state: present
+        update_cache: true
+
+    - name: Download Terraform binary from Yandex Cloud on agent
+      get_url:
+        url: https://hashicorp-releases.yandexcloud.net/terraform/1.9.7/terraform_1.9.7_linux_amd64.zip
+        dest: /tmp/terraform_1.9.7_linux_amd64.zip
+
+    - name: Unzip Terraform binary on agent
+      unarchive:
+        src: /tmp/terraform_1.9.7_linux_amd64.zip
+        dest: /usr/local/bin/
+        remote_src: true
+        mode: '0755'
+
+    - name: Verify Terraform installation on agent
+      command: terraform --version
+      register: terraform_version_agent
+
+    - name: Show Terraform version on agent
+      debug:
+        msg: "Terraform version on agent is {{ terraform_version_agent.stdout }}"
+
+    - name: Create Terraform config file (.terraformrc)
+      copy:
+        dest: "/home/{{ jenkins_user_name }}/.terraformrc"
+        content: |
+          provider_installation {
+            network_mirror {
+              url = "https://terraform-mirror.yandexcloud.net/"
+              include = ["registry.terraform.io/*/*"]
+            }
+            direct {
+              exclude = ["registry.terraform.io/*/*"]
+            }
+          }
+        owner: "{{ jenkins_user_name }}"
+        group: "{{ jenkins_user_group }}"
+        mode: '0644'
+
     - name: Add Jenkins master's public key to authorized_keys on agents
       authorized_key:
         user: "{{ jenkins_user_name }}"
@@ -144,6 +188,33 @@
         owner: "{{ jenkins_user_name }}"
         group: "{{ jenkins_user_group }}"
 
+    - name: Ensure the keys directory exists on Jenkins agent
+      file:
+        path: "/home/{{ jenkins_user_name }}/.ssh"
+        state: directory
+        owner: "{{ jenkins_user_name }}"
+        group: "{{ jenkins_user_group }}"
+        mode: '0700'
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Copy public SSH key to Jenkins agent
+      copy:
+        src: "~/.ssh/id_ed25519_aleksei.pub"
+        dest: "/home/{{ jenkins_user_name }}/.ssh/id_ed25519_aleksei.pub"
+        owner: "{{ jenkins_user_name }}"
+        group: "{{ jenkins_user_group }}"
+        mode: '0644'
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Copy private SSH key to Jenkins agent
+      copy:
+        src: "~/.ssh/private_vm_key.pub"
+        dest: "/home/{{ jenkins_user_name }}/.ssh/private_vm_key.pub"
+        owner: "{{ jenkins_user_name }}"
+        group: "{{ jenkins_user_group }}"
+        mode: '0600'
+      delegate_to: "{{ inventory_hostname }}"
+
     - name: Add Docker repository
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -152,6 +223,19 @@
     - name: Add Docker APT repository
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+        update_cache: true
+
+    - name: Add Kubernetes apt-key
+      get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
+        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+        mode: "0644"
+        force: true
+
+    - name: Add Kubernetes APT repository
+      apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
         state: present
         update_cache: true
 

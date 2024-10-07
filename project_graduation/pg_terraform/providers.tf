@@ -18,14 +18,17 @@ terraform {
 
     skip_region_validation      = true
     skip_credentials_validation = true
-    skip_requesting_account_id  = true # необходимая опция при описании бэкенда для Terraform версии 1.6.1 и старше.
-    skip_s3_checksum            = true # необходимая опция при описании бэкенда для Terraform версии 1.6.3 и старше.
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
 
   }
 }
 
 provider "yandex" {
   token     = var.token != "" ? var.token : var.YC_TOKEN
+  # service_account_key_file = var.SA_KEY_FILE
+  storage_access_key = var.access_key
+  storage_secret_key = var.secret_key
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
   zone      = var.zones["a"]

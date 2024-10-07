@@ -1,8 +1,6 @@
 resource "yandex_storage_bucket" "tf_state_bucket" {
-  access_key = var.YC_ACCESS_KEY
-  secret_key = var.YC_SECRET_KEY
   bucket = "tf-state-bucket-justaleksy"
-  acl    = "public-read-write"
+  acl    = "private"
 
 
   versioning {
