@@ -1,0 +1,46 @@
+---
+- name: Установка пакета unzip на агентах
+  apt:
+    name: unzip
+    state: present
+    update_cache: true
+
+- name: Установка Docker на агентах
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: true
+
+- name: Добавление публичного ключа Jenkins-мастера в authorized_keys на агентах
+  authorized_key:
+    user: "{{ jenkins_user_name }}"
+    key: "{{ hostvars['jenkins_master'].jenkins_master_public_key }}"
+    state: present
+
+- name: Создание конфигурационного файла Terraform (.terraformrc)
+  copy:
+    dest: "/home/{{ jenkins_user_name }}/.terraformrc"
+    content: |
+      provider_installation {
+        network_mirror {
+          url = "https://terraform-mirror.yandexcloud.net/"
+          include = ["registry.terraform.io/*/*"]
+        }
+        direct {
+          exclude = ["registry.terraform.io/*/*"]
+        }
+      }
+    owner: "{{ jenkins_user_name }}"
+    group: "{{ jenkins_user_group }}"
+    mode: '0644'
+
+- name: Проверка установки Terraform на агенте
+  command: terraform --version
+  register: terraform_version_agent
+
+- name: Показать версию Terraform на агенте
+  debug:
+    msg: "Версия Terraform на агенте: {{ terraform_version_agent.stdout }}"

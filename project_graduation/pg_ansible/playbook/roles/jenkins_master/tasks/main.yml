@@ -1,0 +1,46 @@
+---
+- name: Установка пакета ACL
+  apt:
+    name: acl
+    state: present
+    update_cache: true
+
+- name: Установка зависимостей для Jenkins
+  apt:
+    name:
+      - openjdk-21-jdk
+      - gnupg
+      - ca-certificates
+      - curl
+      - unzip
+    state: present
+    update_cache: true
+
+- name: Добавление ключа apt для Jenkins
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    state: present
+    keyring: /etc/apt/keyrings/jenkins.gpg
+
+- name: Добавление репозитория Jenkins
+  apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/jenkins.gpg] https://pkg.jenkins.io/debian-stable binary/
+    state: present
+    update_cache: true
+
+- name: Установка Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Настройка Jenkins для прослушивания всех интерфейсов
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: ^HTTP_HOST=
+    line: HTTP_HOST=0.0.0.0
+
+- name: Запуск и включение Jenkins
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true

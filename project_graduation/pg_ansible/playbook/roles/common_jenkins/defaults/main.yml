@@ -1,0 +1,4 @@
+---
+jenkins_user_group: jenkins
+jenkins_user_name: jenkins
+java_packages: "openjdk-11-jdk,openjdk-11-jre"

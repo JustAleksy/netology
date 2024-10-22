@@ -1,0 +1,5 @@
+---
+- name: Перезапуск Jenkins
+  service:
+    name: jenkins
+    state: restarted

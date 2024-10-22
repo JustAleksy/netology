@@ -1,0 +1,17 @@
+---
+- name: Создание группы для пользователя Jenkins
+  group:
+    name: "{{ jenkins_user_group }}"
+    state: present
+
+- name: Создание пользователя Jenkins
+  user:
+    name: "{{ jenkins_user_name }}"
+    group: "{{ jenkins_user_group }}"
+    create_home: yes
+
+- name: Установка пакетов Java
+  apt:
+    name: "{{ java_packages | split(',') }}"
+    state: present
+    update_cache: true
