@@ -122,7 +122,7 @@ ansible-playbook -i inventory/hosts.ini playbook/monitoring.yml
 kubectl get pods -n monitoring
 ```
 **Авторизуйтесь в Grafana**
-```http
+```
 http://<IP-адрес балансировщика>:80
 ```
 - **Логин**: admin
@@ -158,7 +158,7 @@ kubectl apply -f kuber/service.yaml
 kubectl get pods
 ```
 Доступ к приложению осуществляется через Port 8080 по адресу:
-```http
+```
 http://<IP-адрес балансировщика>:8080
 ```
 ---
@@ -170,7 +170,7 @@ http://<IP-адрес балансировщика>:8080
 ansible-playbook -i inventory/hosts.ini playbook/jenkins.yml
 ```
 2. **После установки перейдите в веб-интерфейс Jenkins:**
-```http
+```
 http://<IP_адрес_балансировщика>
 ```
 3. **Разблокируйте Jenkins, следуя инструкциям на экране.**
@@ -199,7 +199,7 @@ http://<IP_адрес_балансировщика>
 
 # Чеклист
 1. **Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.**
-```html
+```
 https://github.com/JustAleksy/pg_terraform
 ```
 2. **Пример CI-CD-terraform pipeline.**
@@ -334,32 +334,32 @@ Terraform applied successfully!
 Finished: SUCCESS
 ```
 3. **Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.**
-```http
+```
 https://github.com/JustAleksy/pg_ansible
 ```
 4. **Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.**
 - **Репозиторий**: 
-  ```http
+  ```
   https://github.com/JustAleksy/test_app
   ```
 - **Docker Hub**: 
-  ```http
+  ```
   https://hub.docker.com/repository/docker/justmeat/test-app/general
   ```
 5. **Репозиторий с конфигурацией Kubernetes кластера (интегрирован в репозиторий тестового приложения).**
-```http
+```
 https://github.com/JustAleksy/test_app
 ```
-6. **Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.**
+6. **Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.**  
 **Grafana**: 
-```http
+```
 http://84.201.170.225:80
 ```
 - **Логин**: admin
 - **Пароль**: В комментарии к заданию
 
 **test_app**: 
-```http
+```
 http://84.201.170.225:8080
 ```
 7. **Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)**
