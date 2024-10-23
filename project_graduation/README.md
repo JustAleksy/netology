@@ -12,9 +12,9 @@
 
 ## Структура репозиториев
 
-- **pg_terraform**: конфигурационные файлы Terraform для создания облачной инфраструктуры.
-- **pg_ansible**: плейбуки Ansible для настройки Kubernetes-кластера и установки систем мониторинга и CI/CD.
-- **pg_nginx_app**: исходный код тестового приложения, Dockerfile и манифесты Kubernetes.
+- [**pg_terraform**](https://github.com/JustAleksy/pg_terraform): конфигурационные файлы Terraform для создания облачной инфраструктуры.
+- [**pg_ansible**](https://github.com/JustAleksy/pg_ansible): плейбуки Ansible для настройки Kubernetes-кластера и установки систем мониторинга и CI/CD.
+- [**pg_nginx_app**](https://github.com/JustAleksy/test_app): исходный код тестового приложения, Dockerfile и манифесты Kubernetes.
 
 ## Предварительные требования
 
