@@ -3,15 +3,17 @@ kind: Deployment
 metadata:
   name: test-app
   namespace: monitoring
+  labels:
+    app: my-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: test-app
+      app: my-app
   template:
     metadata:
       labels:
-        app: test-app
+        app: my-app
     spec:
       containers:
       - name: test-app

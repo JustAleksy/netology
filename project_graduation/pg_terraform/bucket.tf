@@ -2,7 +2,6 @@ resource "yandex_storage_bucket" "tf_state_bucket" {
   bucket = "tf-state-bucket-justaleksy"
   acl    = "private"
 
-
   versioning {
     enabled = true
   }
